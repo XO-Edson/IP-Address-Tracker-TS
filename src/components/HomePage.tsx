@@ -18,7 +18,7 @@ const HomePage = () => {
           <MapContainer
             center={[-1.286389, 36.817223]}
             zoom={13}
-            style={{ height: "600px", width: "100%" }}
+            style={{ height: "780px", width: "100%" }}
           >
             <TileLayer
               attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
