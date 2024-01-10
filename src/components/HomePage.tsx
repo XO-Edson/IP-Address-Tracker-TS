@@ -3,6 +3,7 @@ import "leaflet/dist/leaflet.css";
 import { useIpData } from "../context/data";
 import { Icon } from "leaflet";
 import mapPin from "../assets/images/icon-location.svg";
+import ButtonIcon from "../assets/images/icon-arrow.svg";
 
 type IconProps = {
   iconUrl: string;
@@ -10,17 +11,15 @@ type IconProps = {
 };
 
 const HomePage = () => {
-  const ipData = useIpData();
+  const { ipData, IPAddressFn, ipAddress, ipAddressStatic, searchBtn } =
+    useIpData();
 
-  console.log(ipData);
+  console.log(ipAddressStatic);
 
   const customIcon: IconProps = {
     iconUrl: mapPin,
     iconSize: [38, 38],
   };
-
-  const position = ipData ? [ipData.location.lat, ipData.location.lng] : null;
-
   const iconInstance = new Icon(customIcon);
 
   return (
@@ -28,12 +27,38 @@ const HomePage = () => {
       <section className="background">
         <div className="searchBar">
           <h1>IP Address Tracker</h1>
+          <div className="input-field">
+            <input
+              type="text"
+              placeholder="Search for any IP address or domain"
+              value={ipAddress}
+              onChange={IPAddressFn}
+            />
+            <button onClick={() => searchBtn}>
+              <img src={ButtonIcon} alt="button icon" />
+            </button>
+          </div>
         </div>
         <section className="ip-details">
-          <p>IP ADDRESS : {ipData?.ip}</p>
-          <p>LOCATION : {ipData?.location.country}</p>
-          <p>TIMEZONE: {ipData?.location.timezone}</p>
-          <p>ISP : {ipData?.isp}</p>
+          <div>
+            <p>IP ADDRESS </p>
+            <h2>{ipData?.ip}</h2>
+          </div>
+
+          <div>
+            <p>LOCATION</p>
+            <h2> {ipData?.location.country}</h2>
+          </div>
+
+          <div>
+            <p>TIMEZONE </p>
+            <h2>{ipData?.location.timezone}</h2>
+          </div>
+
+          <div>
+            <p>ISP </p>
+            <h2>{ipData?.isp}</h2>
+          </div>
         </section>
       </section>
 
@@ -50,9 +75,7 @@ const HomePage = () => {
             />
 
             <Marker
-              position={
-                [ipData?.location.lat, ipData?.location.lng] || undefined
-              }
+              position={[ipData?.location.lat ?? 0, ipData?.location.lng ?? 0]}
               icon={iconInstance}
             ></Marker>
           </MapContainer>
