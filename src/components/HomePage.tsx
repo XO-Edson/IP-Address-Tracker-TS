@@ -4,6 +4,7 @@ import { useIpData } from "../context/data";
 import { Icon } from "leaflet";
 import mapPin from "../assets/images/icon-location.svg";
 import ButtonIcon from "../assets/images/icon-arrow.svg";
+import { useEffect } from "react";
 
 type IconProps = {
   iconUrl: string;
@@ -11,10 +12,14 @@ type IconProps = {
 };
 
 const HomePage = () => {
-  const { ipData, IPAddressFn, ipAddress, ipAddressStatic, searchBtn } =
-    useIpData();
+  const { ipData, IPAddressFn, ipAddress, searchBtn, mapRef } = useIpData();
 
-  console.log(ipAddressStatic);
+  useEffect(() => {
+    // Log to check if ipData is changing properly
+    console.log(ipData);
+  }, [ipData]);
+
+  console.log(ipData);
 
   const customIcon: IconProps = {
     iconUrl: mapPin,
@@ -26,7 +31,7 @@ const HomePage = () => {
     <main>
       <section className="background">
         <div className="searchBar">
-          <h1>IP Address Tracker</h1>
+          <h2>IP Address Tracker</h2>
           <div className="input-field">
             <input
               type="text"
@@ -34,7 +39,7 @@ const HomePage = () => {
               value={ipAddress}
               onChange={IPAddressFn}
             />
-            <button onClick={() => searchBtn}>
+            <button onClick={() => searchBtn(ipAddress ?? "")}>
               <img src={ButtonIcon} alt="button icon" />
             </button>
           </div>
@@ -42,22 +47,22 @@ const HomePage = () => {
         <section className="ip-details">
           <div>
             <p>IP ADDRESS </p>
-            <h2>{ipData?.ip}</h2>
+            <h4>{ipData?.ip}</h4>
           </div>
 
           <div>
             <p>LOCATION</p>
-            <h2> {ipData?.location.country}</h2>
+            <h4> {ipData?.location.country}</h4>
           </div>
 
           <div>
             <p>TIMEZONE </p>
-            <h2>{ipData?.location.timezone}</h2>
+            <h4>{ipData?.location.timezone}</h4>
           </div>
 
           <div>
             <p>ISP </p>
-            <h2>{ipData?.isp}</h2>
+            <h4>{ipData?.isp}</h4>
           </div>
         </section>
       </section>
@@ -65,7 +70,11 @@ const HomePage = () => {
       <section>
         <div className="map">
           <MapContainer
-            center={[-1.286389, 36.817223]}
+            ref={mapRef}
+            center={[
+              ipData?.location.lat || 54.7023545,
+              ipData?.location.lng || -3.2765753,
+            ]}
             zoom={13}
             style={{ height: "780px", width: "100%" }}
           >
@@ -75,7 +84,7 @@ const HomePage = () => {
             />
 
             <Marker
-              position={[ipData?.location.lat ?? 0, ipData?.location.lng ?? 0]}
+              position={[ipData?.location.lat || 0, ipData?.location.lng || 0]}
               icon={iconInstance}
             ></Marker>
           </MapContainer>

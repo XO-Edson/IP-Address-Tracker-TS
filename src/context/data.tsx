@@ -1,4 +1,11 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type dataProviderProps = {
   children: ReactNode;
@@ -10,6 +17,7 @@ type DataContextTypes = {
   ipAddressStatic: string | undefined;
   IPAddressFn: (e: React.ChangeEvent<HTMLInputElement>) => void;
   searchBtn: (ipAddress: string) => void;
+  mapRef: any;
 };
 
 export type IpData = {
@@ -29,18 +37,25 @@ export const DataContext = createContext<DataContextTypes>({
   ipAddressStatic: undefined,
   IPAddressFn: () => {},
   searchBtn: () => {},
+  mapRef: undefined,
 });
 
 export const DataProvider = ({ children }: dataProviderProps) => {
   const [ipData, setIpData] = useState<IpData | null>(null);
   const [ipAddress, setIpAddress] = useState<string>("");
-  const [ipAddressStatic, setIpAddressStatic] = useState<string | undefined>(
-    ""
-  );
+  const [ipAddressStatic, setIpAddressStatic] = useState<string>("");
 
   const IPAddressFn = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIpAddress(e.target.value);
   };
+
+  const mapRef = useRef<any>();
+
+  useEffect(() => {
+    if (ipData) {
+      mapRef.current.setView([ipData.location.lat, ipData.location.lng], 13);
+    }
+  }, [ipData]);
 
   const fetchData = async (ipAddress: string) => {
     try {
@@ -60,6 +75,8 @@ export const DataProvider = ({ children }: dataProviderProps) => {
   };
 
   const searchBtn = async () => {
+    console.log("click");
+
     if (ipAddress) {
       setIpAddressStatic(ipAddress);
       await fetchData(ipAddress);
@@ -68,7 +85,14 @@ export const DataProvider = ({ children }: dataProviderProps) => {
 
   return (
     <DataContext.Provider
-      value={{ ipData, ipAddress, IPAddressFn, ipAddressStatic, searchBtn }}
+      value={{
+        ipData,
+        ipAddress,
+        IPAddressFn,
+        ipAddressStatic,
+        searchBtn,
+        mapRef,
+      }}
     >
       {children}
     </DataContext.Provider>
@@ -77,8 +101,8 @@ export const DataProvider = ({ children }: dataProviderProps) => {
 
 /* HOOK */
 export const useIpData = (): DataContextTypes => {
-  const { ipData, ipAddress, IPAddressFn, ipAddressStatic, searchBtn } =
+  const { ipData, ipAddress, IPAddressFn, ipAddressStatic, searchBtn, mapRef } =
     useContext(DataContext);
 
-  return { ipData, ipAddress, IPAddressFn, ipAddressStatic, searchBtn };
+  return { ipData, ipAddress, IPAddressFn, ipAddressStatic, searchBtn, mapRef };
 };
