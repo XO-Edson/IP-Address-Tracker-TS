@@ -43,6 +43,7 @@
   border-radius: 10px 0 0 10px;
   border: none;
   outline: none;
+  cursor: pointer;
 
   width: 60%;
 }
@@ -68,10 +69,6 @@
   letter-spacing: 1.5px;
 }
 
-.ip-details h4 {
-  border-right: 1px solid gray;
-}
-
 button {
   background-color: black;
   border: none;
@@ -79,4 +76,64 @@ button {
   border-radius: 0 10px 10px 0;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
+}
+
+.details-container {
+  width: 100%;
+}
+
+.border {
+  width: 90%;
+  border-right: 1px solid gray;
+  padding: 0.5rem 0 0.5rem 0;
+}
+
+/* TABLET AND SMALLER SCREENS */
+@media screen and (max-width: 660px) {
+  h2 {
+    white-space: nowrap;
+  }
+
+  .background {
+    background-image: url("../src/assets/images/pattern-bg-mobile.png");
+    height: 30vh;
+  }
+
+  .ip-details {
+    z-index: 9999;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -50%;
+    width: 90%;
+    height: 30vh;
+
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .background input {
+    padding: 1rem;
+  }
+
+  button {
+    padding: 1rem;
+  }
+
+  .details-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  .border {
+    padding: 0.5rem 0 0.5rem 0;
+    border: none;
+    width: 100%;
+  }
+
+  .ip-details h4 {
+    text-align: center;
+  }
 }
